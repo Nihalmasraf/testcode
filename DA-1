@@ -1,0 +1,81 @@
+import pandas as pd
+
+# Load the dataset from the given URL
+url = "https://raw.githubusercontent.com/salemprakash/EDA/main/Data/indian_food.csv"
+df = pd.read_csv(url)
+
+# Display the first few rows to inspect the dataset
+print("Dataset Loaded:\n", df.head())
+
+# Check the dimensions (rows, columns) of the dataset
+print("\nDimensions of the dataset:", df.shape)
+
+# Get a summary of the dataset
+print("\nSummary of the dataset:\n", df.describe(include='all'))
+
+# Check the data types of each column
+print("\nData Types of each column:\n", df.dtypes)
+
+
+# Check for missing values
+print("\nMissing values in each column:\n", df.isnull().sum())
+
+# Handling missing values - filling with mean or mode as appropriate
+df['price'] = df['price'].fillna(df['price'].mean())
+df['horsepower'] = df['horsepower'].fillna(df['horsepower'].mean())
+df['normalized-losses'] = df['normalized-losses'].fillna(df['normalized-losses'].mean())
+
+# Confirm missing values are handled
+print("\nMissing values after handling:\n", df.isnull().sum())
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Histogram for 'price'
+plt.figure(figsize=(8, 6))
+sns.histplot(df['price'], kde=True)
+plt.title('Histogram of Price')
+plt.xlabel('Price')
+plt.ylabel('Frequency')
+plt.show()
+
+# Boxplot for 'horsepower'
+plt.figure(figsize=(8, 6))
+sns.boxplot(x=df['horsepower'])
+plt.title('Boxplot of Horsepower')
+plt.xlabel('Horsepower')
+plt.show()
+
+# Pie chart for a categorical column (e.g., 'fuel-type')
+df['fuel-type'].value_counts().plot.pie(autopct='%1.1f%%', startangle=90)
+plt.title('Pie Chart of Fuel Type')
+plt.show()
+
+
+# Scatter plot between 'price' and 'horsepower'
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x=df['price'], y=df['horsepower'])
+plt.title('Price vs Horsepower')
+plt.xlabel('Price')
+plt.ylabel('Horsepower')
+plt.show()
+
+# Correlation heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Correlation Heatmap')
+plt.show()
+
+
+# Pairplot for numerical columns
+sns.pairplot(df[['price', 'horsepower', 'engine-size', 'city-mpg']])
+plt.suptitle('Pairplot for Price, Horsepower, Engine Size, City MPG', y=1.02)
+plt.show()
+
+# Parallel coordinates plot
+from pandas.plotting import parallel_coordinates
+df_parallel = df[['fuel-type', 'price', 'horsepower', 'engine-size', 'city-mpg']]
+parallel_coordinates(df_parallel, 'fuel-type', colormap='Set2')
+plt.title('Parallel Coordinates Plot')
+plt.show()
